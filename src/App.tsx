@@ -1,7 +1,7 @@
 import React, { useRef, useLayoutEffect, useEffect, useState, useCallback, type JSX } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Stars, Icosahedron, Cylinder, Torus, Float } from '@react-three/drei';
-import { EffectComposer, Bloom, ChromaticAberration, Noise } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,19 +10,31 @@ import * as THREE from 'three';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Performance detection
+function usePerformanceTier(): 'low' | 'high' {
+  const [tier, setTier] = useState<'low' | 'high'>('high');
+  useEffect(() => {
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    const cores = navigator.hardwareConcurrency || 4;
+    const memory = nav.deviceMemory || 8;
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (cores <= 4 || memory <= 4 || isMobile) {
+      setTier('low');
+    }
+  }, []);
+  return tier;
+}
+
 const globalStyles = `
-  body { cursor: none; background: #030406; overflow-x: hidden; }
+  body { background: #030406; overflow-x: hidden; }
+  @media (hover: hover) and (pointer: fine) { body { cursor: none; } }
   
   .stroke-text {
     color: transparent;
     -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.8);
   }
   
-  .noise-overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    pointer-events: none; z-index: 9999; opacity: 0.03;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  }
+  /* noise-overlay removed for performance */
 
   .custom-cursor {
     position: fixed; top: 0; left: 0; width: 50px; height: 50px;
@@ -44,6 +56,40 @@ const globalStyles = `
     100% { transform: translateX(-100%); }
   }
   .animate-marquee { display: flex; white-space: nowrap; animation: marquee 20s linear infinite; }
+
+  /* Hamburger */
+  .hamburger-line {
+    display: block; width: 24px; height: 2px;
+    background: #fff; border-radius: 2px;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s;
+  }
+  .hamburger-open .hamburger-line:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger-open .hamburger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger-open .hamburger-line:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  /* Mobile menu */
+  .mobile-menu { 
+    position: fixed; inset: 0; z-index: 40;
+    background: rgba(3, 4, 6, 0.95); backdrop-filter: blur(20px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .mobile-menu.open { opacity: 1; pointer-events: auto; }
+  .mobile-menu-item {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .mobile-menu.open .mobile-menu-item {
+    opacity: 1; transform: translateY(0);
+  }
+  .mobile-menu.open .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(2) { transition-delay: 0.15s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(3) { transition-delay: 0.2s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(4) { transition-delay: 0.25s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(5) { transition-delay: 0.3s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(6) { transition-delay: 0.35s; }
+  .mobile-menu.open .mobile-menu-item:nth-child(7) { transition-delay: 0.4s; }
 `;
 
 function MagneticCTA({ children, href, className }: { children: React.ReactNode, href?: string, className?: string }): JSX.Element {
@@ -127,12 +173,22 @@ const NAV_ITEMS = [
 function Navbar(): JSX.Element {
   const [activeSection, setActiveSection] = useState('hero');
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
 
   useLayoutEffect(() => {
     const triggers: ScrollTrigger[] = [];
@@ -152,28 +208,75 @@ function Navbar(): JSX.Element {
   }, []);
 
   const scrollTo = useCallback((id: string) => {
+    setMobileOpen(false);
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#030406]/80 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent py-5'}`}>
-      <div className="max-w-7xl mx-auto px-8 md:px-[10%] flex items-center justify-between">
-        <button onClick={() => scrollTo('hero')} className="text-lg font-bold tracking-tight text-white hover-trigger transition-colors cursor-none">
-          LS<span className="text-[#00f0ff]">.</span>
-        </button>
-        <div className="hidden md:flex items-center gap-1">
-          {NAV_ITEMS.map(({ id, label }) => (
-            <button key={id} onClick={() => scrollTo(id)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover-trigger cursor-none ${activeSection === id ? 'text-[#00f0ff] bg-[#00f0ff]/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}>
-              {label}
-            </button>
-          ))}
+    <>
+      <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-[#030406]/80 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent py-5'}`}>
+        <div className="max-w-7xl mx-auto px-6 md:px-[10%] flex items-center justify-between">
+          <button onClick={() => scrollTo('hero')} className="text-lg font-bold tracking-tight text-white hover-trigger transition-colors cursor-none z-50 relative">
+            LS<span className="text-[#00f0ff]">.</span>
+          </button>
+
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-1">
+            {NAV_ITEMS.map(({ id, label }) => (
+              <button key={id} onClick={() => scrollTo(id)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover-trigger cursor-none ${activeSection === id ? 'text-[#00f0ff] bg-[#00f0ff]/10' : 'text-zinc-400 hover:text-white hover:bg-white/5'}`}>
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="hidden md:flex items-center gap-3">
+            <a href="/cv-lucas-sabino.pdf" download className="flex items-center gap-2 px-4 py-2 text-sm font-semibold border border-white/20 text-zinc-300 rounded-lg hover:bg-white/10 hover:text-white transition-all hover-trigger cursor-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Currículo
+            </a>
+            <a href="mailto:lucas3sabino@gmail.com" className="px-4 py-2 text-sm font-semibold border border-[#00f0ff]/30 text-[#00f0ff] rounded-lg hover:bg-[#00f0ff]/10 transition-all hover-trigger cursor-none">
+              Contato
+            </a>
+          </div>
+
+          {/* Hamburger button (mobile) */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className={`md:hidden z-50 relative flex flex-col items-center justify-center gap-[6px] w-10 h-10 cursor-none ${mobileOpen ? 'hamburger-open' : ''}`}
+            aria-label="Menu"
+          >
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+          </button>
         </div>
-        <a href="mailto:lucas3sabino@gmail.com" className="hidden md:block px-4 py-2 text-sm font-semibold border border-[#00f0ff]/30 text-[#00f0ff] rounded-lg hover:bg-[#00f0ff]/10 transition-all hover-trigger cursor-none">
-          Contato
-        </a>
+      </nav>
+
+      {/* Mobile menu overlay */}
+      <div className={`mobile-menu md:hidden ${mobileOpen ? 'open' : ''}`}>
+        {NAV_ITEMS.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => scrollTo(id)}
+            className={`mobile-menu-item text-2xl font-bold tracking-tight py-3 px-8 rounded-xl transition-colors cursor-none ${
+              activeSection === id ? 'text-[#00f0ff]' : 'text-white/70 hover:text-white'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+        <div className="mobile-menu-item mt-4 flex flex-col gap-3 items-center">
+          <a href="/cv-lucas-sabino.pdf" download className="flex items-center gap-2 px-6 py-3 text-sm font-semibold border border-white/20 text-white rounded-full hover:bg-white/10 transition-all cursor-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Baixar Currículo
+          </a>
+          <a href="mailto:lucas3sabino@gmail.com" className="px-6 py-3 text-sm font-semibold border border-[#00f0ff]/30 text-[#00f0ff] rounded-full hover:bg-[#00f0ff]/10 transition-all cursor-none">
+            Contato
+          </a>
+        </div>
       </div>
-    </nav>
+    </>
   );
 }
 
@@ -322,14 +425,16 @@ function HexCore(): JSX.Element {
 export default function App(): JSX.Element {
   const mainRef = useRef<HTMLElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
+  const perfTier = usePerformanceTier();
+  const isLowEnd = perfTier === 'low';
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const elements = document.querySelectorAll('.gsap-reveal');
       elements.forEach((el) => {
         gsap.fromTo(el, 
-          { autoAlpha: 0, y: 50, filter: 'blur(5px)', scale: 0.98 }, 
-          { autoAlpha: 1, y: 0, filter: 'blur(0px)', scale: 1, duration: 1.2, ease: 'power3.out', 
+          { autoAlpha: 0, y: 40 }, 
+          { autoAlpha: 1, y: 0, duration: 1, ease: 'power3.out', 
             scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' } 
           }
         );
@@ -378,23 +483,28 @@ export default function App(): JSX.Element {
       <style>{globalStyles}</style>
       <LoadingScreen />
       <Navbar />
-      <div className="noise-overlay" />
       <div className="custom-cursor hidden md:block" ref={cursorRef} />
 
       <div className="relative w-full bg-[#030406] font-sans text-white overflow-x-hidden selection:bg-[#00f0ff] selection:text-black">
         
         <div className="fixed top-0 left-0 w-full h-screen z-0 pointer-events-auto">
-          <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-            <Stars radius={100} depth={50} count={3000} factor={1.5} saturation={0} fade speed={0.5} />
+          <Canvas
+            camera={{ position: [0, 0, 8], fov: 45 }}
+            dpr={isLowEnd ? [1, 1] : [1, 1.5]}
+            performance={{ min: 0.5 }}
+            gl={{ powerPreference: 'high-performance', antialias: !isLowEnd }}
+          >
+            <Stars radius={100} depth={50} count={isLowEnd ? 800 : 1500} factor={1.5} saturation={0} fade speed={0.5} />
             <ambientLight intensity={0.1} />
             <directionalLight position={[10, 10, 5]} intensity={0.5} />
             
             <HexCore />
 
-            <EffectComposer enableNormalPass>
-              <Bloom luminanceThreshold={0.5} mipmapBlur intensity={1.5} />
-              <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={new THREE.Vector2(0.002, 0.002)} />
-              <Noise opacity={0.03} />
+            <EffectComposer>
+              <Bloom luminanceThreshold={0.6} mipmapBlur intensity={isLowEnd ? 0.8 : 1.2} />
+              {!isLowEnd ? (
+                <ChromaticAberration blendFunction={BlendFunction.NORMAL} offset={new THREE.Vector2(0.0015, 0.0015)} />
+              ) : <></>}
             </EffectComposer>
           </Canvas>
         </div>
@@ -577,7 +687,11 @@ export default function App(): JSX.Element {
                 <span className="relative z-10 uppercase tracking-widest cursor-none">Vamos Conversar</span>
                 <div className="absolute inset-0 bg-[#00f0ff] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out z-0"></div>
               </MagneticCTA>
-              <div className="flex gap-4 font-mono text-sm text-zinc-400">
+              <div className="flex flex-wrap justify-center gap-4 font-mono text-sm text-zinc-400">
+                <a href="/cv-lucas-sabino.pdf" download className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#00f0ff]/30 bg-[#00f0ff]/10 text-[#00f0ff] font-bold transition-colors uppercase cursor-none hover-trigger shadow-[0_0_20px_rgba(0,240,255,0.2)] backdrop-blur-md hover:bg-[#00f0ff]/20">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Currículo
+                </a>
                 <a href="https://www.linkedin.com/in/lucas-sabino-492571355" target="_blank" rel="noopener noreferrer" className="px-6 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold transition-colors uppercase cursor-none hover-trigger shadow-[0_0_20px_rgba(0,0,0,0.5)] backdrop-blur-md">LinkedIn</a>
                 <a href="https://github.com/Lucas-Sabino01" target="_blank" rel="noopener noreferrer" className="px-6 py-3 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold transition-colors uppercase cursor-none hover-trigger shadow-[0_0_20px_rgba(0,0,0,0.5)] backdrop-blur-md">GitHub</a>
               </div>
