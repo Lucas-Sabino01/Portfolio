@@ -636,7 +636,7 @@ export default function App(): JSX.Element {
                 </div>
               </a>
 
-              <a href="#" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-yellow-500/20 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-yellow-500/5 hover:border-yellow-500/40 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+              <a href="https://www.youtube.com/watch?v=UGcp7Y4xO-k" target="_blank" rel="noopener noreferrer" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-yellow-500/20 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-yellow-500/5 hover:border-yellow-500/40 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                 <div className="relative z-10">
                   <p className="text-xs font-mono text-yellow-500 mb-2">🏆 1º LUGAR GRAND PRIX SENAI</p>
                   <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:translate-x-2 transition-transform text-white group-hover:text-yellow-400">Delta WAN (IoT)</h3>
@@ -649,7 +649,7 @@ export default function App(): JSX.Element {
                 </div>
               </a>
 
-              <a href="#" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-white/5 hover:border-[#00f0ff]/50 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+              <a href="https://github.com/Lucas-Sabino01/TecnoTooling-ALFA" target="_blank" rel="noopener noreferrer" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-white/5 hover:border-[#00f0ff]/50 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                 <div className="relative z-10">
                   <p className="text-xs font-mono text-[#00f0ff] mb-2">FRONT-END LEAD</p>
                   <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:translate-x-2 transition-transform text-white group-hover:text-[#00f0ff]">Sistema ALFA</h3>
@@ -662,7 +662,7 @@ export default function App(): JSX.Element {
                 </div>
               </a>
 
-              <a href="#" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-white/5 hover:border-emerald-400/50 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+              <a href="https://github.com/Lucas-Sabino01/Project-Chatbot" target="_blank" rel="noopener noreferrer" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-white/5 hover:border-emerald-400/50 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                 <div className="relative z-10">
                   <p className="text-xs font-mono text-emerald-400 mb-2">PROJETO PESSOAL</p>
                   <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:translate-x-2 transition-transform text-white group-hover:text-emerald-400">Assistente Gemini AI</h3>
@@ -671,6 +671,74 @@ export default function App(): JSX.Element {
                     <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">LLM</span>
                     <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Gemini 3.0</span>
                     <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Prompt Eng.</span>
+                  </div>
+                </div>
+              </a>
+
+              <a href="https://github.com/Lucas-Sabino01/javastore-workspace" target="_blank" rel="noopener noreferrer" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-white/5 hover:border-[#00f0ff]/50 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                <div className="relative z-10">
+                  <p className="text-xs font-mono text-[#00f0ff] mb-2">MICROSERVIÇOS</p>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:translate-x-2 transition-transform text-white group-hover:text-[#00f0ff]">JavaStore</h3>
+                  <p className="text-sm md:text-base text-zinc-400 mb-6 font-light">Ecossistema e-commerce com 4 microsserviços, API Gateway centralizado, mensageria RabbitMQ e autenticação JWT.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Java 23</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Spring Boot</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">RabbitMQ</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Docker</span>
+                  </div>
+                </div>
+              </a>
+
+              <a href="https://github.com/Lucas-Sabino01/Sistema-Juridico-Frontend" target="_blank" rel="noopener noreferrer" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-purple-500/20 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-purple-500/5 hover:border-purple-500/40 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                <div className="relative z-10">
+                  <p className="text-xs font-mono text-purple-400 mb-2">FULL STACK — SaaS</p>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:translate-x-2 transition-transform text-white group-hover:text-purple-400">Sistema Jurídico</h3>
+                  <p className="text-sm md:text-base text-zinc-400 mb-6 font-light">Plataforma de gestão jurídica com Kanban, Agenda, Analytics e extração semântica de PDFs via Google Gemini.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">React</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Java / Spring</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Gemini AI</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">PostgreSQL</span>
+                  </div>
+                </div>
+              </a>
+
+              <a href="https://github.com/Lucas-Sabino01/Eurotrip-Planner-Visualizador-de-Grafos" target="_blank" rel="noopener noreferrer" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-white/10 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-white/5 hover:border-[#00f0ff]/50 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                <div className="relative z-10">
+                  <p className="text-xs font-mono text-[#00f0ff] mb-2">ALGORITMOS & ESTRUTURA DE DADOS</p>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:translate-x-2 transition-transform text-white group-hover:text-[#00f0ff]">Eurotrip Planner</h3>
+                  <p className="text-sm md:text-base text-zinc-400 mb-6 font-light">Visualizador interativo de grafos com Dijkstra e Prim, renderização em Canvas e animações de rota em tempo real.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">TypeScript</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Vite</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Canvas API</span>
+                  </div>
+                </div>
+              </a>
+
+              <a href="https://github.com/Lucas-Sabino01/AutoTech-Manager" target="_blank" rel="noopener noreferrer" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-orange-500/20 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-orange-500/5 hover:border-orange-500/40 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                <div className="relative z-10">
+                  <p className="text-xs font-mono text-orange-400 mb-2">MODELAGEM DE SOFTWARE</p>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:translate-x-2 transition-transform text-white group-hover:text-orange-400">AutoTech Manager</h3>
+                  <p className="text-sm md:text-base text-zinc-400 mb-6 font-light">Sistema de gestão de oficina mecânica com modelagem UML completa, cálculo automático de OS e protótipo visual.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">C++</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">UML</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">OOP</span>
+                  </div>
+                </div>
+              </a>
+
+              <a href="https://github.com/Lucas-Sabino01/Project-Book-Catalog" target="_blank" rel="noopener noreferrer" className="gsap-reveal group relative w-full h-auto min-h-[16rem] border border-emerald-500/20 rounded-2xl overflow-hidden backdrop-blur-xl bg-[#030406]/60 transition-all hover:bg-emerald-500/5 hover:border-emerald-500/40 p-8 flex flex-col justify-end shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                <div className="relative z-10">
+                  <p className="text-xs font-mono text-emerald-400 mb-2">FULL STACK</p>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:translate-x-2 transition-transform text-white group-hover:text-emerald-400">Book Catalog</h3>
+                  <p className="text-sm md:text-base text-zinc-400 mb-6 font-light">Plataforma de gerenciamento de acervo bibliográfico com autenticação JWT, CRUD completo e dashboard de métricas.</p>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">React</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Node.js</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">Express</span>
+                    <span className="px-3 py-1 rounded-full text-xs font-mono border border-white/20 bg-black/40">SQLite</span>
                   </div>
                 </div>
               </a>
